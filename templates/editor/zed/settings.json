@@ -49,16 +49,23 @@
     // The one requirement: wordpress-stubs.php is ~5.3 MB and Intelephense skips
     // files larger than `files.maxSize` (default 1 MB), so raise it. This keeps
     // the editor and static analysis pointed at one identical WordPress source.
+    //
+    // NOTE: Zed's php extension wraps `lsp.intelephense.settings` as
+    // { "intelephense": <these settings> } before answering Intelephense's
+    // workspace/configuration pull. So the keys below sit DIRECTLY under
+    // `settings` (environment/files), NOT under an extra "intelephense" key —
+    // that would double-nest and Intelephense would never see files.maxSize,
+    // fall back to the 1 MB default, skip wordpress-stubs.php, and report every
+    // WP core function as undefined. (VS Code is the opposite: there you write
+    // the "intelephense." prefix yourself.)
     "intelephense": {
       "settings": {
-        "intelephense": {
-          "environment": {
-            "phpVersion": "8.3.0",
-            "includePaths": ["vendor"]
-          },
-          "files": {
-            "maxSize": 6000000
-          }
+        "environment": {
+          "phpVersion": "8.3.0",
+          "includePaths": ["vendor"]
+        },
+        "files": {
+          "maxSize": 6000000
         }
       }
     }
