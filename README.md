@@ -16,6 +16,64 @@ Composer can version and auto-update the _rules_; it can't drop files into a
 project root, so editor settings and the per-project stubs are **scaffolded once**
 by `wfaa-init` and then tweaked per project.
 
+## Quick start (fresh project)
+
+The `composer.json` below is the exact setup **verified green** against
+`github.com/lee-wfaa/wfaa-php-config`. It targets the public GitHub repo on the
+`main` branch (no release tag yet), so it opts into dev stability for this one
+package — `prefer-stable` keeps every other dependency on stable releases.
+
+```json
+{
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"repositories": [
+		{ "type": "vcs", "url": "https://github.com/lee-wfaa/wfaa-php-config.git" }
+	],
+	"require-dev": {
+		"wfaa/php-config": "dev-main"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	}
+}
+```
+
+Install, scaffold, and verify:
+
+```bash
+composer update wfaa/php-config
+vendor/bin/wfaa-init                            # scaffold config + editor files
+vendor/bin/phpcs                                # lint against the shared ruleset
+vendor/bin/phpstan analyse --memory-limit=1G    # WordPress-aware static analysis
+```
+
+Once a release tag exists (`git tag v1.0.0 && git push --tags`) — or the repo
+moves to private Bitbucket — drop the two stability flags and pin a version
+instead of tracking the branch:
+
+```json
+{
+	"repositories": [
+		{ "type": "vcs", "url": "https://github.com/lee-wfaa/wfaa-php-config.git" }
+	],
+	"require-dev": {
+		"wfaa/php-config": "^1.0"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	}
+}
+```
+
+> The `allow-plugins` entry must live in the **consuming** project's root
+> `composer.json` — Composer won't run the PHPCS installer plugin from a
+> dependency's config alone.
+
 ## Repo contents
 
 ```

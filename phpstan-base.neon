@@ -11,7 +11,13 @@
 # project's own phpstan.neon.dist — those are per-project and do not belong here.
 includes:
     # WordPress core stubs + WP-aware rules (register_post_meta, hooks, etc.).
-    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+    #
+    # PHPStan resolves `includes` paths relative to THIS file. When this package
+    # is installed, this file lives at vendor/wfaa/php-config/, so `../../` steps
+    # back up to the consumer's vendor/ dir where szepeviktor is installed
+    # (flat Composer layout). Do not change to a bare `vendor/...` path — that
+    # would resolve to vendor/wfaa/php-config/vendor/... and fail.
+    - ../../szepeviktor/phpstan-wordpress/extension.neon
 
 parameters:
     level: 6
