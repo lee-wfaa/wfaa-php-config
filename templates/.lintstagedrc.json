@@ -1,0 +1,7 @@
+{
+  "*.php": "./vendor/bin/phpcs --standard=./phpcs.xml.dist",
+  "src/**/*.{js,ts,tsx}": [
+    "wp-scripts format",
+    "wp-scripts lint-js"
+  ]
+}

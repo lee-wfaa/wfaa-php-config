@@ -1,0 +1,17 @@
+# WFAA — PHPStan base config.
+#
+# Shared PHPStan configuration for WFAA / Wisconsin Foundation WordPress
+# projects. Consumers install this package (wfaa/php-config) via Composer and
+# include the vendored copy from their own phpstan.neon.dist:
+#
+#     includes:
+#         - vendor/wfaa/php-config/phpstan-base.neon
+#
+# Then add project-specific `paths`, `bootstrapFiles`, and `scanFiles` in the
+# project's own phpstan.neon.dist — those are per-project and do not belong here.
+includes:
+    # WordPress core stubs + WP-aware rules (register_post_meta, hooks, etc.).
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+    level: 6

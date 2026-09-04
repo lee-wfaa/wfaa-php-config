@@ -1,0 +1,40 @@
+{
+  // WFAA shared VS Code settings. Copied into a project's .vscode/settings.json
+  // by `vendor/bin/wfaa-init`. Tweak per-project as needed.
+
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
+
+  // ── Prettier (wp-prettier via the local install) for JS/TS/CSS/JSON/MD ──
+  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[jsonc]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[scss]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[markdown]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+
+  // ── PHP is formatted by phpcbf (WPCS), never Prettier ──
+  "[php]": { "editor.defaultFormatter": "wongjn.php-sniffer" },
+
+  // ── ESLint ──
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+  // ── PHP Sniffer & Beautifier (wongjn.php-sniffer): phpcs lint + phpcbf format ──
+  "phpSniffer.autoDetect": true,
+  "phpSniffer.executablesFolder": "vendor/bin/",
+  "phpSniffer.standard": "phpcs.xml.dist",
+  "phpSniffer.run": "onSave",
+
+  // ── Intelephense: resolve WordPress from the vendored php-stubs. Raise
+  // files.maxSize so the ~5.3 MB wordpress-stubs.php is indexed, not skipped. ──
+  "intelephense.environment.phpVersion": "8.3.0",
+  "intelephense.environment.includePaths": ["vendor"],
+  "intelephense.files.maxSize": 6000000,
+
+  // ── Use the workspace TypeScript, not VS Code's bundled copy ──
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
+}

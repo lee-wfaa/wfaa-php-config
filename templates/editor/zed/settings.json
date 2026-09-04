@@ -1,0 +1,66 @@
+{
+  // WFAA shared Zed settings. Copied into a project's .zed/settings.json by
+  // `vendor/bin/wfaa-init`. Zed reads the .zed/settings.json in the directory
+  // you actually open, so this lives at the project root you work from.
+
+  // ── PHP language server selection ───────────────────────────────────────
+  // Zed's `php` extension runs EVERY enabled PHP language server in parallel and
+  // merges their diagnostics. Only Intelephense (configured below) loads the
+  // bundled `wordpress` stubs; phpactor/phpantom/phptools don't know WordPress
+  // core and each stamps a false "unknown function" diagnostic
+  // (flush_rewrite_rules, add_action, …). Enable Intelephense, disable the other
+  // three. `"..."` keeps remaining defaults (the phpcs LSP) running.
+  //
+  // PHP formatting is routed to the phpcs extension (phpcbf + the project
+  // ruleset) instead of Zed's default Prettier: wp-prettier has no PHP parser,
+  // and phpcbf is the WPCS-correct formatter anyway.
+  "languages": {
+    "PHP": {
+      "language_servers": [
+        "intelephense",
+        "!phpactor",
+        "!phpantom",
+        "!phptools",
+        "..."
+      ],
+      "formatter": {
+        "language_server": { "name": "phpcs" }
+      }
+    }
+  },
+
+  "lsp": {
+    // ── PHPCS extension (mike-bronner/zed-phpcs-lsp): lint + phpcbf format ──
+    // Point it at the project's own phpcs/phpcbf and ruleset. Paths are relative
+    // to the project root (the directory you open in Zed).
+    "phpcs": {
+      "settings": {
+        "phpcs_path": "vendor/bin/phpcs",
+        "phpcbf_path": "vendor/bin/phpcbf",
+        "standard": "phpcs.xml.dist"
+      }
+    },
+
+    // ── Intelephense: resolve WordPress from the vendored php-stubs ──────────
+    // WordPress core symbols come from vendor/php-stubs/wordpress-stubs (and
+    // wp-cli-stubs) — the SAME stub set PHPStan uses via szepeviktor. Those are
+    // ordinary PHP files inside the worktree, so Intelephense indexes them.
+    //
+    // The one requirement: wordpress-stubs.php is ~5.3 MB and Intelephense skips
+    // files larger than `files.maxSize` (default 1 MB), so raise it. This keeps
+    // the editor and static analysis pointed at one identical WordPress source.
+    "intelephense": {
+      "settings": {
+        "intelephense": {
+          "environment": {
+            "phpVersion": "8.3.0",
+            "includePaths": ["vendor"]
+          },
+          "files": {
+            "maxSize": 6000000
+          }
+        }
+      }
+    }
+  }
+}

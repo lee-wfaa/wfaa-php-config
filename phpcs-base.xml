@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<ruleset name="WFAA — PHPCS Base">
+    <description>
+        Shared PHPCS ruleset for WFAA / Wisconsin Foundation WordPress projects.
+
+        Consumers install this package (wfaa/php-config) via Composer and point
+        their own phpcs.xml.dist at the vendored copy:
+
+            &lt;rule ref="vendor/wfaa/php-config/phpcs-base.xml"/&gt;
+
+        Each project then adds its own &lt;file&gt;, exclude-patterns, and
+        text_domain. Edits here affect every project that inherits this file;
+        per-project overrides belong in the project's own phpcs.xml.dist.
+    </description>
+
+    <!-- ─── Runner config ──────────────────────────────────────────────────── -->
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="8"/>
+    <arg name="colors"/>
+    <arg value="ps"/>
+
+    <!-- ─── WPCS 3.x — modular rulesets ────────────────────────────────────── -->
+    <rule ref="WordPress-Core">
+        <!-- Override Yoda conditions; modern PHP doesn't need them. -->
+        <exclude name="Universal.Operators.StrictComparisons.LooseEqual"/>
+        <exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+        <!-- PSR-4 autoloading requires PascalCase filenames matching class names. -->
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+    </rule>
+    <rule ref="WordPress-Extra">
+        <!-- Allow short array syntax [] — overrides Extra's DisallowShortArraySyntax. -->
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+    </rule>
+    <rule ref="WordPress-Docs">
+        <!-- DocBlock requirements for functions, classes, hooks. -->
+    </rule>
+
+    <!-- ─── Require short array syntax: [] not array() ─────────────────────── -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+    <!-- ─── Require declare(strict_types=1) at the top of every PHP file ──── -->
+    <!-- PSR12.Files.FileHeader.IncorrectOrder conflicts (it wants docblock before declare);
+         suppress it since we follow WordPress file-header order, not PSR-12. -->
+    <rule ref="Generic.PHP.RequireStrictTypes"/>
+    <rule ref="PSR12.Files.FileHeader.IncorrectOrder">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Enforce the formatting of the declare statement itself — e.g. reject the
+         stray space in declare(strict_types=1 ). RequireStrictTypes only checks
+         the directive's presence/value, not its spacing; this fills that gap and
+         is auto-fixable via phpcbf. -->
+    <rule ref="PSR12.Files.DeclareStatement"/>
+
+    <!-- ─── PHP version target ─────────────────────────────────────────────── -->
+    <config name="testVersion" value="8.3-"/>
+    <rule ref="PHPCompatibility"/>
+
+    <!-- ─── Project naming prefixes (shared across all WFAA projects) ──────── -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array">
+                <element value="WisconsinFoundation"/>
+                <element value="wisf"/>
+                <element value="WISF"/>
+                <!-- SCREAMING_SNAKE form of the project prefix, e.g. the theme's
+                     WISCONSIN_FOUNDATION_THEME_* constants. The camelCase prefix
+                     above does not match across the underscore boundary. -->
+                <element value="WISCONSIN_FOUNDATION"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- ─── Block render.php carve-out ─────────────────────────────────────── -->
+    <!-- Block render.php files receive $attributes, $content, and $block from
+         WP_Block::render() — they are not plugin globals. Suppress only the
+         variable-prefix check for these files; function/constant checks remain. -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
+        <exclude-pattern>*/render\.php$</exclude-pattern>
+    </rule>
+</ruleset>

@@ -1,0 +1,17 @@
+{
+  // WFAA shared VS Code extension recommendations. VS Code prompts new
+  // developers to install these when they open the folder — the shared
+  // onboarding baseline so everyone gets the same DX. Keep in sync with the
+  // settings.json this ships alongside.
+  "recommendations": [
+    "bmewburn.vscode-intelephense-client",
+    "wongjn.php-sniffer",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
+  ],
+  // Running a second PHPCS extension alongside wongjn.php-sniffer produces
+  // duplicate diagnostics and wasted CPU — we standardize on wongjn.
+  "unwantedRecommendations": [
+    "shevaua.phpcs"
+  ]
+}

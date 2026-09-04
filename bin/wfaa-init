@@ -1,0 +1,66 @@
+#!/usr/bin/env sh
+# wfaa-init — scaffold WFAA lint / static-analysis / editor config into a project.
+#
+# Copies the copy-in templates from this package into the current directory
+# (or a directory passed as the first non-flag argument). Existing files are
+# left untouched unless --force is given.
+#
+# Usage:
+#   vendor/bin/wfaa-init [--force] [target-dir]
+set -eu
+
+FORCE=0
+DEST=""
+for arg in "$@"; do
+  case "$arg" in
+    --force|-f) FORCE=1 ;;
+    -*) echo "wfaa-init: unknown option: $arg" >&2; exit 2 ;;
+    *) DEST="$arg" ;;
+  esac
+done
+[ -n "$DEST" ] || DEST="$(pwd)"
+
+# Resolve this script's real directory, following symlinks (Composer symlinks
+# it into vendor/bin), so we can find ../templates relative to the real file.
+SCRIPT="$0"
+while [ -h "$SCRIPT" ]; do
+  DIR="$(cd "$(dirname "$SCRIPT")" && pwd)"
+  LINK="$(readlink "$SCRIPT")"
+  case "$LINK" in
+    /*) SCRIPT="$LINK" ;;
+    *) SCRIPT="$DIR/$LINK" ;;
+  esac
+done
+PKG_DIR="$(cd "$(dirname "$SCRIPT")/.." && pwd)"
+TEMPLATES="$PKG_DIR/templates"
+
+# copy SRC DEST — respects --force, reports what happened.
+copy() {
+  src="$1"; dst="$2"
+  if [ -e "$dst" ] && [ "$FORCE" -eq 0 ]; then
+    echo "  skip   $dst (exists — use --force to overwrite)"
+    return
+  fi
+  mkdir -p "$(dirname "$dst")"
+  cp "$src" "$dst"
+  echo "  write  $dst"
+}
+
+echo "wfaa-init → $DEST"
+copy "$TEMPLATES/phpcs.xml.dist"        "$DEST/phpcs.xml.dist"
+copy "$TEMPLATES/phpstan.neon.dist"     "$DEST/phpstan.neon.dist"
+copy "$TEMPLATES/.lintstagedrc.json"    "$DEST/.lintstagedrc.json"
+copy "$TEMPLATES/.prettierrc.json"      "$DEST/.prettierrc.json"
+copy "$TEMPLATES/editor/vscode/settings.json"   "$DEST/.vscode/settings.json"
+copy "$TEMPLATES/editor/vscode/extensions.json" "$DEST/.vscode/extensions.json"
+copy "$TEMPLATES/editor/zed/settings.json"      "$DEST/.zed/settings.json"
+
+cat <<'EOF'
+
+Next steps:
+  1. In phpcs.xml.dist    — replace PROJECT_NAME and TEXT_DOMAIN.
+  2. In phpstan.neon.dist — set `paths` to this project's PHP directories.
+  3. Add `@wfaa/prettier-config` as a devDependency for the .prettierrc to resolve.
+  4. Ensure composer.json allows the phpcodesniffer-composer-installer plugin
+     (see the wfaa/php-config README).
+EOF
