@@ -42,9 +42,10 @@
     },
 
     // ── Intelephense: resolve WordPress from the vendored php-stubs ──────────
-    // WordPress core symbols come from vendor/php-stubs/wordpress-stubs (and
-    // wp-cli-stubs) — the SAME stub set PHPStan uses via szepeviktor. Those are
-    // ordinary PHP files inside the worktree, so Intelephense indexes them.
+    // WordPress core symbols come from vendor/php-stubs/wordpress-stubs — the
+    // SAME stub set PHPStan uses via szepeviktor. Those are ordinary PHP files
+    // inside the worktree, so Intelephense indexes them. (wp-cli-stubs is not
+    // installed by default; see phpstan.neon.dist if the project needs it.)
     //
     // The one requirement: wordpress-stubs.php is ~5.3 MB and Intelephense skips
     // files larger than `files.maxSize` (default 1 MB), so raise it. This keeps

@@ -17,6 +17,12 @@ parameters:
     # Extra stubs for symbols not covered by the WordPress stub set — e.g.
     # WP-CLI classes (WP_CLI) for `wp` commands, or APIs too new for the
     # bundled stubs. Uncomment / extend as needed.
+    #
+    # wp-cli-stubs is NOT pulled in by wfaa/php-config: it constrains
+    # php-stubs/wordpress-stubs to ^6.0 and would hold every consumer back on
+    # WordPress 6.x stubs. Projects that ship `wp` commands should
+    # `composer require --dev php-stubs/wp-cli-stubs` themselves and accept
+    # that cap knowingly.
     # scanFiles:
     #     - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
 

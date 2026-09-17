@@ -17,8 +17,10 @@
     "phpcompatibility/php-compatibility": "^9.3",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.2",
     "phpstan/phpstan": "^2.2",
-    "szepeviktor/phpstan-wordpress": "^2.0",
-    "php-stubs/wp-cli-stubs": "^2.12"
+    "szepeviktor/phpstan-wordpress": "^2.0"
+  },
+  "suggest": {
+    "php-stubs/wp-cli-stubs": "Stubs for WP_CLI symbols. Require this only in projects that ship `wp` commands, then add it to scanFiles in phpstan.neon.dist. It is not a hard dependency because it caps php-stubs/wordpress-stubs at ^6.0."
   },
   "bin": ["bin/wfaa-init"],
   "config": {
